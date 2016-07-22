@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2016, Blinkinlabs, LLC
+ * Copyright (c) 2016, Blinkinlabs, LLC
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -12,7 +12,7 @@
  *   list of conditions and the following disclaimer in the documentation and/or
  *   other materials provided with the distribution.
  *
- * * Neither the name of Majenko Technologies nor the names of its
+ * * Neither the name of Blinkinlabs, LLC nor the names of its
  *   contributors may be used to endorse or promote products derived from
  *   this software without specific prior written permission.
  *
@@ -165,10 +165,10 @@ bool MMA8653::getXYZ(float& X, float& Y, float& Z) {
         Wire.read();
     }
     if(Wire.available()) {
-        X = factor*(int8_t)Wire.read();
+        Y = factor*(int8_t)Wire.read();
     }
     if(Wire.available()) {
-        Y = factor*(int8_t)Wire.read();
+        X = factor*(int8_t)Wire.read();
     }
     if(Wire.available()) {
         Z = factor*(int8_t)Wire.read();
