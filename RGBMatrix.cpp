@@ -154,6 +154,7 @@ void RGBMatrix::show()
 	}
 
 	Serial1.print(char(255));
+//  delay(1);
 #else
 	// for the adafruit feather
 	unsigned offset = 0;

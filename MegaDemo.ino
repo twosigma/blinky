@@ -27,8 +27,8 @@ Cycle cycle;
 Pov pov;
 
 Demo * demos[] = {
+  &cycle,
 	&rain,
-	&cycle,
 	&life,
 	&bubble,
 };
@@ -54,12 +54,12 @@ void setup()
 	// during startup
 	if (!badge.button())
 	{
-#if 1
+#if 0
 		WiFi.mode(WIFI_STA);
 		WiFi.begin("twosigma-blinky", "blinkblinkblink");
 #else
 		WiFi.mode(WIFI_AP);
-		WiFi.begin("blinky", "blinkypw");
+		WiFi.begin("mypocket", "BUBBLEmonkey");
 		WiFi.config(IPAddress(192,168,1,4), IPAddress(0,0,0,0), IPAddress(255,255,255,0));
 #endif
 	}
