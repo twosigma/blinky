@@ -16,6 +16,7 @@
 #include "Rain.h"
 #include "Cycle.h"
 #include "Pov.h"
+#include "Snake.h"
 
 Badge badge;
 
@@ -25,12 +26,14 @@ Life life;
 Rain rain;
 Cycle cycle;
 Pov pov;
+Snake snake;
 
 Demo * demos[] = {
-  &cycle,
+	&snake,
 	&rain,
 	&life,
 	&bubble,
+  &cycle,
 };
 
 const unsigned num_demos = sizeof(demos) / sizeof(*demos);
@@ -167,4 +170,5 @@ void loop()
 		demo->draw(badge.matrix);
 
 	badge.matrix.show();
+	delay(2);
 }
