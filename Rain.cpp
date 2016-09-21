@@ -7,13 +7,10 @@ Rain::Rain()
 }
 
 static const uint32_t palette[] = {
-	0x00FF00,
-	0x40FF00,
-	0x408000,
-	0x004000,
-	0x002000,
-	0x808000,
-	0xFFFFFF,
+	0x008080,
+	0xa03f00, // dark orange
+	// 0xff6080, // nice pink
+	0xa0a0a0,
 };
 
 static const int palette_size = sizeof(palette)/sizeof(*palette);
