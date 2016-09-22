@@ -118,6 +118,9 @@ bool Snake::step(float ax, float ay, float az)
 		new_food();
 		flash = 8;
 		length++;
+
+		// go ahead and signal that we've found it
+		return true;
 	}
 
 	// age out any old squares
@@ -216,8 +219,8 @@ void Snake::draw(RGBMatrix &matrix)
 	if (flash)
 	{
 		// flash white around the 
-		for(int x = -flash/2 ; x <= flash/2 ; x++)
-			for(int y = -flash/2 ; y < flash/2 ; y++)
+		for(int x = -flash/3 ; x <= flash/3 ; x++)
+			for(int y = -flash/3 ; y < flash/3 ; y++)
 				matrix.blend(px+x, py+y, 16, dead ? 0xFF0000 : 0xff6080); // red if we're dead, a nice pink for success
 
 /*
