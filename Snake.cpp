@@ -8,13 +8,16 @@ Snake::Snake()
 
 static const uint32_t palette[] = {
 	0x008080, // teal, the traces
-	0xa0a0a0, // the head
+	0xffffff, // white for the head
+	//0x8000c0, // purple for the head
 	0xa03f00, // food, dark orange
 	// 0xff6080, // nice pink
 };
 
 void Snake::new_food()
 {
+	int too_close_tries = 4;
+
 	while(1)
 	{
 		fx = random(size);
@@ -22,7 +25,20 @@ void Snake::new_food()
 
 		if (age[fx][fy] != 0)
 			continue;
+
+		// don't put it on the same as the player
 		if (fx == px && fy == py)
+			continue;
+
+		// try to avoid the edges
+		if ((fx == 0 || fy == 0 || fx == size-1 || fy == size-1) && too_close_tries-- > 0)
+			continue;
+
+		// try to move it a ways away
+		int dx = fx - px;
+		int dy = fy - py;
+		int dist2 = dx*dx + dy*dy;
+		if (dist2 <= 2 && too_close_tries-- > 0)
 			continue;
 
 		// empty space!
@@ -83,7 +99,7 @@ bool Snake::step(float ax, float ay, float az)
 
 	const unsigned long now = millis();
 	int dt = now - last_draw;
-	if (dt < 125)
+	if (dt < 250 - 4 * length)
 		return true;
 	last_draw = now;
 
@@ -138,11 +154,11 @@ bool Snake::step(float ax, float ay, float az)
 	if (is_food(px+0, py-1)) { vx =  0; vy = -1; } else
 	if (is_food(px+1, py+0)) { vx = +1; vy =  0; } else
 	if (is_food(px-1, py+0)) { vx = -1; vy =  0; } else
-	if (random(4) != 0 && space_free(px + vdx, py + vdy)) { vx = vdx; vy = vdy; } else
-	if (random(8) != 0 && space_free(px+0, py+1)) { vx =  0; vy = +1; } else
-	if (random(8) != 0 && space_free(px+0, py-1)) { vx =  0; vy = -1; } else
-	if (random(8) != 0 && space_free(px+1, py+0)) { vx = +1; vy =  0; } else
-	if (random(8) != 0 && space_free(px-1, py+0)) { vx = -1; vy =  0; } else
+	if (random(8) != 0 && space_free(px + vdx, py + vdy)) { vx = vdx; vy = vdy; } else
+	if (random(12) != 0 && space_free(px+0, py+1)) { vx =  0; vy = +1; } else
+	if (random(12) != 0 && space_free(px+0, py-1)) { vx =  0; vy = -1; } else
+	if (random(12) != 0 && space_free(px+1, py+0)) { vx = +1; vy =  0; } else
+	if (random(12) != 0 && space_free(px-1, py+0)) { vx = -1; vy =  0; } else
 	if (space_free(px+0, py+1)) { vx =  0; vy = +1; } else
 	if (space_free(px+0, py-1)) { vx =  0; vy = -1; } else
 	if (space_free(px+1, py+0)) { vx = +1; vy =  0; } else
@@ -164,6 +180,7 @@ bool Snake::step(float ax, float ay, float az)
 	} else {
 		// out of bounds or hit something. dead!
 		dead = 255;
+		flash = 16;
 	}
 
 	return true;
@@ -171,6 +188,14 @@ bool Snake::step(float ax, float ay, float az)
 
 void Snake::draw(RGBMatrix &matrix)
 {
+	if (flash)
+	{
+		// flash white around the 
+		for(int x = -flash/2 ; x <= flash/2 ; x++)
+			for(int y = -flash/2 ; y < flash/2 ; y++)
+				matrix.blend(px+x, py+y, 16, dead ? 0xFF0000 : 0xff6080); // red if we're dead, a nice pink for success
+		flash--;
+	} else
 	if (dead)
 	{
 		// fade everything
@@ -179,14 +204,6 @@ void Snake::draw(RGBMatrix &matrix)
 				matrix.blend(x, y, 1, 0);
 		if (--dead == 0)
 			begin();
-	} else
-	if (flash)
-	{
-		// flash white
-		for(int x = 0 ; x < size ; x++)
-			for(int y = 0 ; y < size ; y++)
-				matrix.blend(x, y, 8, 0xFFFFFF);
-		flash--;
 	} else {
 		for(int x = 0 ; x < size ; x++)
 		{

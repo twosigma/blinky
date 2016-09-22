@@ -15,7 +15,7 @@ private:
 	int8_t fx, fy;
 
 	unsigned long last_draw;
-	uint8_t flash;
+	int8_t flash;
 	uint8_t dead;
 
 	void new_food();
