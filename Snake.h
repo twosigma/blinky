@@ -8,7 +8,9 @@ class Snake : public Demo
 {
 private:
 	static const int size = 8;
+	uint8_t path[size*size];
 	uint8_t age[size][size];
+	uint8_t offset;
 	uint8_t length;
 	int8_t vx, vy;
 	int8_t px, py;
@@ -23,6 +25,7 @@ private:
 	bool space_free(int x, int y);
 	bool is_food(int x, int y);
 
+	void draw_path(RGBMatrix &matrix, uint32_t color);
 public:
 	Snake();
 

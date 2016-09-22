@@ -81,7 +81,10 @@ void Snake::begin()
 	px = random(size);
 	py = random(size);
 
+	offset = 0;
+	path[offset++] = px * size + py;
 	age[px][py] = 1;
+
 	vx = 0;
 	vy = 1;
 
@@ -113,8 +116,8 @@ bool Snake::step(float ax, float ay, float az)
 	if (px == fx && py == fy)
 	{
 		new_food();
-		length++;
 		flash = 8;
+		length++;
 	}
 
 	// age out any old squares
@@ -177,6 +180,9 @@ bool Snake::step(float ax, float ay, float az)
 		px = npx;
 		py = npy;
 		age[px][py] = 1;
+		path[offset++] = px * size + py;
+		if (offset > size * size)
+			offset = 0;
 	} else {
 		// out of bounds or hit something. dead!
 		dead = 255;
@@ -184,6 +190,25 @@ bool Snake::step(float ax, float ay, float az)
 	}
 
 	return true;
+}
+
+
+void Snake::draw_path(RGBMatrix &matrix, uint32_t color)
+{
+	for(int x = 0 ; x < size ; x++)
+	{
+		for(int y = 0 ; y < size ; y++)
+		{
+			matrix.blend(x, y, 2, 0);
+
+			int a = age[x][y];
+			if (a == 0)
+				continue;
+
+			int dim = 128; //(255 * (length - a)) / length;
+			matrix.blend(x, y, dim, color);
+		}
+	}
 }
 
 void Snake::draw(RGBMatrix &matrix)
@@ -194,7 +219,18 @@ void Snake::draw(RGBMatrix &matrix)
 		for(int x = -flash/2 ; x <= flash/2 ; x++)
 			for(int y = -flash/2 ; y < flash/2 ; y++)
 				matrix.blend(px+x, py+y, 16, dead ? 0xFF0000 : 0xff6080); // red if we're dead, a nice pink for success
+
+/*
+		// highlight the trail, starting at the current head
+		// (at offset in the path)
+		uint8_t pos = offset + size*size - (length - flash/4);
+		pos %= size*size;
+		uint8_t oxy = path[pos];
+		matrix.blend(oxy / size, oxy % size, 200, palette[2]);
+*/
+		draw_path(matrix, dead ? 0xa08000 : 0x8000c0);
 		flash--;
+		delay(30);
 	} else
 	if (dead)
 	{
@@ -205,20 +241,7 @@ void Snake::draw(RGBMatrix &matrix)
 		if (--dead == 0)
 			begin();
 	} else {
-		for(int x = 0 ; x < size ; x++)
-		{
-			for(int y = 0 ; y < size ; y++)
-			{
-				matrix.blend(x, y, 2, 0);
-
-				int a = age[x][y];
-				if (a == 0)
-					continue;
-
-				int dim = 128; //(255 * (length - a)) / length;
-				matrix.blend(x, y, dim, palette[0]);
-			}
-		}
+		draw_path(matrix, palette[0]);
 
 		matrix.blend(px, py, 128, palette[1]);
 		matrix.blend(fx, fy, 128, palette[2]);
