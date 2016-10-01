@@ -17,6 +17,7 @@
 #include "Cycle.h"
 #include "Pov.h"
 #include "Snake.h"
+#include "Rubiks.h"
 
 Badge badge;
 
@@ -27,8 +28,10 @@ Rain rain;
 Cycle cycle;
 Pov pov;
 Snake snake;
+Rubiks rubiks;
 
 Demo * demos[] = {
+  //&rubiks,
 	&snake,
 	&rain,
 	&life,
