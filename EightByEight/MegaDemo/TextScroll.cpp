@@ -9,15 +9,16 @@
 
 #include "font.h"
 
-#define TEAL 0x008080
+// CUSTOMIZE: Set the text color here, in hex format (similar to coloring HTML.)
+static const uint32_t color = 0x008070; // Teal Color 0x008080
 
 void TextScroll::begin()
 {
 	next_row = 0;
 	last_time_scroll = millis();
 
-	// max length == 256 characters
-	load_string("Eight-by-eight is a neat little board!  ");
+	// CUSTOMIZE: Set the message here, maximum length is 256 characters!
+	load_string("IMAGINE  BUILD  REALIZE  ");
 }
 
 void TextScroll::load_string(const char* string) {
@@ -73,7 +74,7 @@ void TextScroll::draw(RGBMatrix &matrix)
 	for (int x = 0 ; x < LED_ROWS ; x++) {
 		for (int y = 0 ; y < LED_COLS ; y++) {
 			if (screen[x][y])
-				matrix.blend(x, y, 80, TEAL);
+				matrix.blend(x, y, 80, color);
 		}
 	}
 }

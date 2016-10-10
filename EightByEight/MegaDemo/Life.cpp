@@ -92,20 +92,20 @@ void Life::draw(RGBMatrix &matrix)
 			if (n && !o)
 			{
 				// a brand new one, make it blue
-				matrix.blend(i, j, blend/4, 250, 200, 200);
+				matrix.blend(i, j, blend/4, 0xFAC8C8); // 0xFAC8C8
 			} else
 			if (n && o)
 			{
 				// an old one, blend it to white
-				matrix.blend(i, j, blend/2, 250, 200, 200);
+				matrix.blend(i, j, blend/2, 0xFAC8C8);
 			} else
 			if (!n && o)
 			{
 				// it just died, make it blue
-				matrix.blend(i, j, blend/4, 0, 0, 200);
+				matrix.blend(i, j, blend/4, 0x0000C8);
 			} else {
 				// it is dead, fade to black
-				matrix.blend(i, j, blend/4, 0, 0, 0);
+				matrix.blend(i, j, blend/4, 0x000000);
 			}
 		}
 
