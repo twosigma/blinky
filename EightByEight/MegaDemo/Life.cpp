@@ -1,6 +1,15 @@
 #include <Arduino.h>
 #include "Life.h"
 
+// Cell Colors
+// CUSTOMIZE: Color of a new cell
+static const uint32_t cell_new = 0xFAC8C8;
+// CUSTOMIZE: Color of an old cell (this color will be blended with the new)
+static const uint32_t cell_old = 0xFAC8C8;
+// CUSTOMIZE: Color of a dead cell
+static const uint32_t cell_dead = 0x0000C8;
+
+
 Life::Life()
 {
 	reset();
@@ -91,18 +100,19 @@ void Life::draw(RGBMatrix &matrix)
 
 			if (n && !o)
 			{
-				// a brand new one, make it blue
-				matrix.blend(i, j, blend/4, 0xFAC8C8); // 0xFAC8C8
+
+				// A new cell, default color is light blue 0xFAC8C8
+				matrix.blend(i, j, blend/4, cell_new);
 			} else
 			if (n && o)
 			{
-				// an old one, blend it to white
-				matrix.blend(i, j, blend/2, 0xFAC8C8);
+				// CUSTOMIZE: An old cell, default color blends with 0xFAC8C8
+				matrix.blend(i, j, blend/2, cell_old);
 			} else
 			if (!n && o)
 			{
-				// it just died, make it blue
-				matrix.blend(i, j, blend/4, 0x0000C8);
+				// CUSTOMIZE: A cell that just died, default color is to go darker blue
+				matrix.blend(i, j, blend/4, cell_dead);
 			} else {
 				// it is dead, fade to black
 				matrix.blend(i, j, blend/4, 0x000000);
