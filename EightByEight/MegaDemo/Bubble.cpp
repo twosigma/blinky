@@ -5,6 +5,8 @@
 #include "Bubble.h"
 #include <math.h>
 
+// CUSTOMIZE: Set the bubble's color here, in hex format (similar to coloring HTML.)
+static const uint32_t color = 0x008080;
 
 void Bubble::begin()
 {
@@ -49,7 +51,8 @@ void Bubble::draw(RGBMatrix &matrix)
 			if (dist < 0)
 				continue;
 
-			matrix.blend(x, y, dist, 255, 0, 0);
+			// bubble color
+			matrix.blend(x, y, dist, color);
 		}
 	}
 }
