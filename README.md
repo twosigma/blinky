@@ -14,15 +14,16 @@ The Two Sigma 8x8 Blinky is an Arduino-compatible wearable electronics platform 
 1. Within the Arduino IDE, open "MegaDemo.ino" from the "MegaDemo" folder.
 1. To Upload the demo to the 8x8 Blinky, first select "Generic ESP8266 Module" from Tools > Boards,
 1. Change the following items under the Tools menu as follows (unlisted items should remain unchanged):
-..1. Flash Mode: QIO
-..1. Flash Size: 2M (1M SPIFFS)
-..1. Reset Method: nodemcu
-..1. Upload Speed: 460800 (Use 215600 on Microsoft Windows systems.)
-..1. Port: <varies, typically "/dev/cu.usbmodem1411" on Mac, or "COM#" on Microsoft Windows.>
+  1. Flash Mode: QIO
+  1. Flash Size: 2M (1M SPIFFS)
+  1. Reset Method: nodemcu
+  1. Upload Speed: 460800 (Use 215600 on Microsoft Windows systems.)
+  1. Port: <varies, typically "/dev/cu.usbmodem1411" on Mac, or "COM#" on Microsoft Windows.>
 1. Invoke the "Upload" function under the Sketch menu.
 
 ## Where to learn more about the Espressif ESP8266 WiFi Module on the 8x8 Blinky
 The ESP8266 is popular for hobbyists building "Internet of Things" connected devices, and has tremendous potential.  Here are three good sources to learn more about what you might do with your 8x8 Blinky:
+
 1. The [ESP8266 Arduino User Community](http://www.esp8266.com/viewforum.php?f=25&sid=d6e359cf888a34141c95f1bc94b0aabb)
 2. Code examples located within the Arduino IDE under File > Examples > "Examples for Generic ESP8266 Module" (visible only when Tools > Board > "Generic ESP8266 Module" is selected)
 3. The [Blinkinlabs 8x8 Documentation](https://github.com/Blinkinlabs/EightByEight/blob/master/documentation/Getting%20started%20guide.pdf)
@@ -30,7 +31,7 @@ The ESP8266 is popular for hobbyists building "Internet of Things" connected dev
 ## Contributing and Learning More About Two Sigma
 We warmly welcome pull requests!  The TS 8x8 will be making appearances at a number of events attended by Two Sigma, and we hope you'll find it an inspiring platform to experiment and learn about the field of wearable technology and creative computing!
 
-Learn more about Two Sigma Investments and our culture of creativity at https://www.twosigma.com!
+Learn more about Two Sigma Investments and our culture of creativity at (https://www.twosigma.com!
 
 Finally, explore our other open source contributions at https://www.github.com/twosigma!
 
