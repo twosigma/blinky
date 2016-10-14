@@ -17,9 +17,11 @@
 #include "Pov.h"
 #include "Snake.h"
 #include "Rubiks.h"
+#include "TextScroll.h"
 
 Badge badge;
 
+TextScroll textscroll;
 Pixels pixels;
 Bubble bubble;
 Life life;
@@ -30,6 +32,7 @@ Snake snake;
 Rubiks rubiks;
 
 Demo * demos[] = {
+    &textscroll,
   //&rubiks,
 	&snake,
 	&rain,
@@ -68,12 +71,12 @@ void setup()
 	// during startup
 	if (!badge.button())
 	{
-#if 0
+#if 1
 		WiFi.mode(WIFI_STA);
 		WiFi.begin("twosigma-blinky", "blinkblinkblink");
 #else
 		WiFi.mode(WIFI_AP);
-		WiFi.begin("mypocket", "BUBBLEmonkey");
+		WiFi.softAP("mypocket", "BUBBLEmonkey");
 		WiFi.config(IPAddress(192,168,1,4), IPAddress(0,0,0,0), IPAddress(255,255,255,0));
 #endif
 	}
