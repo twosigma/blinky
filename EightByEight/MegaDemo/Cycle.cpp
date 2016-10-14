@@ -6,6 +6,9 @@ Cycle::Cycle()
 {
 }
 
+// CUSTOMIZE: Larson Scanner Sweep Color
+static const uint32_t scan_color = 0x008070;
+
 static const uint32_t palette[] = {
 	0xFFFFFF,
 	0x0000FF,
@@ -95,9 +98,9 @@ void Cycle::draw(RGBMatrix &matrix)
 		cpos = 16 - cpos;
 		delta = +1;
 	}
-	matrix.blend(cpos, cpos+delta, 64, 0xFF0000);
-	matrix.blend(cpos, cpos, 255, 0xFF0000);
-	matrix.blend(cpos+delta, cpos, 64, 0xFF0000);
+	matrix.blend(cpos, cpos+delta, 64, scan_color);
+	matrix.blend(cpos, cpos, 255, scan_color);
+	matrix.blend(cpos+delta, cpos, 64, scan_color);
 
 	const uint32_t now = millis();
 	if (do_flash && now - last_flash_millis > 1000)
