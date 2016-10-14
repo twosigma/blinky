@@ -8,6 +8,7 @@
  * If we go more than ten seconds without a packet, the current demo
  * is restarted.
  */
+
 #include "Badge.h"
 #include "Life.h"
 #include "Bubble.h"
@@ -17,9 +18,11 @@
 #include "Pov.h"
 #include "Snake.h"
 #include "Rubiks.h"
+#include "TextScroll.h"
 
 Badge badge;
 
+TextScroll textscroll;
 Pixels pixels;
 Bubble bubble;
 Life life;
@@ -30,12 +33,13 @@ Snake snake;
 Rubiks rubiks;
 
 Demo * demos[] = {
-  //&rubiks,
+    &textscroll,
+	//&rubiks,
 	&snake,
 	&rain,
 	&life,
 	&bubble,
-  &cycle,
+    &cycle,
 };
 
 const unsigned num_demos = sizeof(demos) / sizeof(*demos);
@@ -46,21 +50,12 @@ static char mac_buf[6*3+1];
 static uint32_t last_draw_millis;
 static uint32_t last_video_millis;
 static bool draw_video;
-const unsigned brightnessDivisor = 4;
-static unsigned brightness = 128 * brightnessDivisor - 1;
-
-void nudgeBrightness() {
-  //slowly growing brightness with some catch at the apex to easily stop
-  unsigned x =  ((brightness++ / brightnessDivisor) % 288);
-  badge.matrix.setBrightness(_min(255, x)); // for some reason min is undefined. Seems to be A Thing (https://github.com/esp8266/Arduino/issues/263)
-}
 
 void setup()
 {
 	badge.begin();
 	badge.matrix.clear();
 	badge.matrix.show();
-  nudgeBrightness();
 
 	WiFi.persistent(false);
 
@@ -68,12 +63,12 @@ void setup()
 	// during startup
 	if (!badge.button())
 	{
-#if 0
+#if 1
 		WiFi.mode(WIFI_STA);
 		WiFi.begin("twosigma-blinky", "blinkblinkblink");
 #else
 		WiFi.mode(WIFI_AP);
-		WiFi.begin("mypocket", "BUBBLEmonkey");
+		WiFi.softAP("mypocket", "BUBBLEmonkey");
 		WiFi.config(IPAddress(192,168,1,4), IPAddress(0,0,0,0), IPAddress(255,255,255,0));
 #endif
 	}
@@ -132,7 +127,7 @@ void loop()
 		return;
 	}
 
-	if (badge.button_edge() && !draw_video)
+	if (badge.button_edge())
 	{
 		// should cycle to the next demo
 		demo_num = (demo_num + 1) % num_demos;
@@ -149,10 +144,6 @@ void loop()
 		Serial.print(badge.nz); Serial.print(' ');
 		Serial.println(badge.g);
 	}
-
- if (badge.button()) {
-    nudgeBrightness();
- }
 		
 
 	const uint32_t now = millis();
