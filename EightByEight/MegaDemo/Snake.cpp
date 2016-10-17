@@ -2,8 +2,18 @@
 #include <math.h>
 #include "Snake.h"
 
+//#include <Adafruit_NeoPixel.h>
+#define FASTLED_FORCE_SOFTWARE_SPI 1
+#include <FastLED.h>
+#define NUM_PIXELS 51 // necklace length
+
+//Adafruit_NeoPixel neopixels = Adafruit_NeoPixel(NUM_PIXELS, 5, NEO_GRB);
+CRGB neopixels[NUM_PIXELS];
+
 Snake::Snake()
 {
+	//neopixels.begin();
+	FastLED.addLeds<NEOPIXEL, 5>(neopixels, NUM_PIXELS);
 }
 
 static const uint32_t palette[] = {
@@ -116,7 +126,7 @@ bool Snake::step(float ax, float ay, float az)
 	if (px == fx && py == fy)
 	{
 		new_food();
-		flash = 8;
+		flash = 12;
 		length++;
 
 		// go ahead and signal that we've found it
@@ -218,10 +228,12 @@ void Snake::draw(RGBMatrix &matrix)
 {
 	if (flash)
 	{
-		// flash white around the 
+		// flash red if we're dead, a nice pink for success
+		uint32_t flash_color = dead ? 0xFF0000 : 0xff6080;
+
 		for(int x = -flash/3 ; x <= flash/3 ; x++)
 			for(int y = -flash/3 ; y < flash/3 ; y++)
-				matrix.blend(px+x, py+y, 16, dead ? 0xFF0000 : 0xff6080); // red if we're dead, a nice pink for success
+				matrix.blend(px+x, py+y, 16, flash_color);
 
 /*
 		// highlight the trail, starting at the current head
@@ -231,7 +243,20 @@ void Snake::draw(RGBMatrix &matrix)
 		uint8_t oxy = path[pos];
 		matrix.blend(oxy / size, oxy % size, 200, palette[2]);
 */
+
 		draw_path(matrix, dead ? 0xa08000 : 0x8000c0);
+
+		int flash_length = length - (length * flash) / 16;
+
+		for(int i = 0 ; i < flash_length ; i++)
+		{
+			neopixels[i] = flash_color;
+			neopixels[NUM_PIXELS-1-i] = flash_color;
+		}
+
+		//neopixels[NUM_PIXELS/2 + flash] = flash_color;
+		//neopixels[NUM_PIXELS/2 - flash] = flash_color;
+
 		flash--;
 		delay(30);
 	} else
@@ -241,6 +266,11 @@ void Snake::draw(RGBMatrix &matrix)
 		for(int x = 0 ; x < size ; x++)
 			for(int y = 0 ; y < size ; y++)
 				matrix.blend(x, y, 1, 0);
+
+		//neopixels.fadeToBlackBy(4);
+		for(int i = 0 ; i < NUM_PIXELS ; i++)
+			neopixels[i] -= CRGB(1,1,1);
+
 		if (--dead == 0)
 			begin();
 	} else {
@@ -248,5 +278,13 @@ void Snake::draw(RGBMatrix &matrix)
 
 		matrix.blend(px, py, 128, palette[1]);
 		matrix.blend(fx, fy, 128, palette[2]);
+
+		// fade the necklace
+		//neopixels.fadeToBlackBy(1);
+		for(int i = 0 ; i < NUM_PIXELS ; i++)
+			neopixels[i] -= CRGB(4,1,1);
 	}
+
+	// update the necklace portion, too
+	//neopixels.show();
 }

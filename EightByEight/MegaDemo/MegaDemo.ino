@@ -19,6 +19,9 @@
 #include "Rubiks.h"
 #include "TextScroll.h"
 
+#define FASTLED_FORCE_SOFTWARE_SPI 1
+#include <FastLED.h>
+
 Badge badge;
 
 TextScroll textscroll;
@@ -32,13 +35,13 @@ Snake snake;
 Rubiks rubiks;
 
 Demo * demos[] = {
-    &textscroll,
+    //&textscroll,
   //&rubiks,
 	&snake,
 	&rain,
 	&life,
 	&bubble,
-  &cycle,
+  //&cycle,
 };
 
 const unsigned num_demos = sizeof(demos) / sizeof(*demos);
@@ -72,8 +75,9 @@ void setup()
 	if (!badge.button())
 	{
 #if 1
-		WiFi.mode(WIFI_STA);
-		WiFi.begin("twosigma-blinky", "blinkblinkblink");
+		//WiFi.mode(WIFI_STA);
+		//WiFi.begin("twosigma-blinky", "blinkblinkblink");
+		WiFi.mode(WIFI_OFF);
 #else
 		WiFi.mode(WIFI_AP);
 		WiFi.softAP("mypocket", "BUBBLEmonkey");
@@ -188,5 +192,7 @@ void loop()
 		demo->draw(badge.matrix);
 
 	badge.matrix.show();
+	FastLED.setBrightness(64);
+	FastLED.show();
 	delay(2);
 }
