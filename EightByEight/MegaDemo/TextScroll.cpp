@@ -18,20 +18,28 @@ void TextScroll::begin()
 	last_time_scroll = millis();
 
 	// CUSTOMIZE: Set the message here, maximum length is 256 characters!
-	load_string("IMAGINE  BUILD  REALIZE  ");
+	load_string("imagine  build  realize  ");
 }
 
 void TextScroll::load_string(const char* string) {
 	buffer_end = *buffer;
-
-	// TODO: kern the characters a little when inserting them into the buffer
+	int prev_col_total = -1;
+	int col_total = 0;
 	for (int c=0; c < strlen(string); c++) {
 		char ord = string[c];
 		for (int i=0; i < 8; i++) {
+			col_total = 0;
 			for (int j=0; j < 8; j++) {
-				*buffer_end = font8x8_basic[ord][j] & 1 << i;
+				int val = font8x8_basic[ord][j] & 1 << i;
+				col_total += val;
+				*buffer_end = val;
 				buffer_end++;
 			}
+			if (col_total == 0 && prev_col_total == 0 && ord != ' ') {
+				// remove excessive whitespace between characters unless it's intentional
+				buffer_end -= LED_ROWS;
+			}
+			prev_col_total = col_total;
 		}
 	}
 }
@@ -56,7 +64,7 @@ void TextScroll::scroll_step()
 bool TextScroll::step(float nx, float ny, float nz)
 {
 	const uint32_t now = millis();
-	if (now - last_time_scroll > 60ul) {
+	if (now - last_time_scroll > 100ul) {
 		scroll_step();
 		last_time_scroll = now;
 	}
