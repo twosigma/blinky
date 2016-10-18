@@ -24,24 +24,17 @@ import com.twosigma.blinky.frames.Frame;
 
 public class GifDemo implements Demo {
 
-	private InputStream _source;
+	private Frame[] _frames;
 
-	public GifDemo(InputStream source) {
-		_source = source;
+	public GifDemo(InputStream source) throws IOException {
+		AnimatedGifLoader gifLoader = new AnimatedGifLoader();
+		_frames = gifLoader.loadFrames(source, 8, 8);
 	}
 
 	@Override
 	public void run(Broadcaster broadcaster) {
-		AnimatedGifLoader gifLoader = new AnimatedGifLoader();
-		try {
-			Frame[] frames = gifLoader.loadFrames(_source, 8, 8);
-			while (true) {
-				for (int i = 0; i < frames.length; i++) {
-					broadcaster.draw(frames[i], 0, 100);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (int i = 0; i < _frames.length; i++) {
+			broadcaster.draw(_frames[i], 0, 100);
 		}
 	}
 
