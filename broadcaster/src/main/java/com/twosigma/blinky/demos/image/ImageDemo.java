@@ -17,6 +17,7 @@ package com.twosigma.blinky.demos.image;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
@@ -26,16 +27,17 @@ import com.twosigma.blinky.frames.BufferedImageFrame;
 
 public class ImageDemo implements Demo {
 
+	private BufferedImageFrame _frame;
+
+	public ImageDemo(InputStream source) throws IOException {
+		BufferedImage ts = ImageIO.read(source);
+		_frame = new BufferedImageFrame.Builder(ts).withScale(8, 8).build();
+	}
+
 	@Override
 	public void run(Broadcaster broadcaster) {
-		try {
-			BufferedImage ts = ImageIO.read(getClass().getResourceAsStream("ts.png"));
-			BufferedImageFrame frame = new BufferedImageFrame.Builder(ts).withScale(8, 8).build();
-			for (int i = 0; i < 5; i++) {
-				broadcaster.draw(frame, 0, 1000);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		for (int i = 0; i < 5; i++) {
+			broadcaster.draw(_frame, 0, 1000);
 		}
 	}
 

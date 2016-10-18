@@ -20,6 +20,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.twosigma.blinky.demos.gif.GifDemo;
 import com.twosigma.blinky.demos.halite.HaliteDemo;
 import com.twosigma.blinky.demos.image.ImageDemo;
 
@@ -37,29 +39,37 @@ import com.twosigma.blinky.demos.image.ImageDemo;
 public class MegaBroadcastDemo {
 
 	public static void main(String[] args)
-			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException {
+			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException,
+			URISyntaxException {
 		// "192.168.1.240"
 		new MegaBroadcastDemo("255.255.255.255");
 	}
 
-	MegaBroadcastDemo(String remoteAddress) throws JsonProcessingException, MalformedURLException, IOException, InterruptedException {
+	MegaBroadcastDemo(String remoteAddress)
+			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException,
+			URISyntaxException {
 		try (DatagramSocket socket = createSocket(remoteAddress)) {
 			Broadcaster broadcaster = new Broadcaster(socket);
 			broadcaster.start();
 
-			ImageDemo logo = new ImageDemo();
-			
+			ImageDemo logo = new ImageDemo(
+					getClass().getClassLoader().getResourceAsStream("com/twosigma/blinky/demos/image/ts.png"));
+			GifDemo animatedLogo = new GifDemo(
+					getClass().getClassLoader().getResourceAsStream("com/twosigma/blinky/demos/gif/logopopin.gif"));
+
 			final String path = "com/twosigma/blinky/demos/halite/";
 
 			String[] files = FileUtils.listFiles(path);
 			System.out.println(Arrays.toString(files));
 			@SuppressWarnings("resource")
 			Stream<Demo> haliteDemos = Arrays.<String> stream(files)
-					.map(f -> MegaBroadcastDemo.class.getClassLoader().getResourceAsStream(path + f)).map(f -> new HaliteDemo(f));
+					.map(f -> MegaBroadcastDemo.class.getClassLoader().getResourceAsStream(f))
+					.map(f -> new HaliteDemo(f));
 
-			// mix our logo in between every game
+			// mix our logo(s) in between every game
 			Stream<Demo> allDemos = haliteDemos;
-			List<Demo> flat = allDemos.<Demo> flatMap(o -> Stream.<Demo> builder().add(o).add(logo).build())
+			List<Demo> flat = allDemos
+					.<Demo> flatMap(o -> Stream.<Demo> builder().add(logo).add(o).add(animatedLogo).build())
 					.collect(Collectors.toList());
 			while (true) {
 				for (Iterator<Demo> i = flat.iterator(); i.hasNext();) {
