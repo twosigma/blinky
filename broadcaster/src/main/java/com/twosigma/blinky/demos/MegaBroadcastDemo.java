@@ -20,6 +20,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.SocketException;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -38,13 +39,15 @@ import com.twosigma.blinky.demos.image.ImageDemo;
 public class MegaBroadcastDemo {
 
 	public static void main(String[] args)
-			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException {
+			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException,
+			URISyntaxException {
 		// "192.168.1.240"
 		new MegaBroadcastDemo("255.255.255.255");
 	}
 
 	MegaBroadcastDemo(String remoteAddress)
-			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException {
+			throws JsonProcessingException, MalformedURLException, IOException, InterruptedException,
+			URISyntaxException {
 		try (DatagramSocket socket = createSocket(remoteAddress)) {
 			Broadcaster broadcaster = new Broadcaster(socket);
 			broadcaster.start();
@@ -60,7 +63,7 @@ public class MegaBroadcastDemo {
 			System.out.println(Arrays.toString(files));
 			@SuppressWarnings("resource")
 			Stream<Demo> haliteDemos = Arrays.<String> stream(files)
-					.map(f -> MegaBroadcastDemo.class.getClassLoader().getResourceAsStream(path + f))
+					.map(f -> MegaBroadcastDemo.class.getClassLoader().getResourceAsStream(f))
 					.map(f -> new HaliteDemo(f));
 
 			// mix our logo(s) in between every game
