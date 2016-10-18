@@ -15,14 +15,29 @@
  */
 package com.twosigma.blinky.demos;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 
 public final class FileUtils {
 
-	public static String[] listFiles(String path) {
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(FileUtils.class.getClassLoader().getResourceAsStream(path)));
-		return reader.lines().filter(s -> s.endsWith(".hlt")).toArray(String[]::new);
+	public static String[] listFiles(String path) throws URISyntaxException, IOException {
+		URI uri = FileUtils.class.getClassLoader().getResource(path).toURI();
+		if (uri.getScheme().equals("jar")) {
+			FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.<String, Object> emptyMap());
+			return Files.walk(fileSystem.getPath(path), 1).map(p -> p.toString().substring(1))
+					.filter(s -> s.endsWith(".hlt")).toArray(String[]::new);
+		} else {
+			Path massagedPath = Paths.get(uri);
+			Path root = Paths.get(FileUtils.class.getClassLoader().getResource("").toURI());
+			return Files.walk(massagedPath, 1).map(p -> root.relativize(p).toString())
+					.filter(s -> s.endsWith(".hlt")).toArray(String[]::new);
+		}
 	}
 }
