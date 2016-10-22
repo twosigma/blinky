@@ -7,6 +7,10 @@
  * automatically if it tells us that it has received a packet.
  * If we go more than ten seconds without a packet, the current demo
  * is restarted.
+ * 
+ * If there are three button clicks that are 500ms apart from each other, 
+ * we will toggle whether the "Pixels" demo runs (which connects to the
+ * wifi network and shows the frame requested).
  */
 #include "Badge.h"
 #include "Life.h"
@@ -44,11 +48,13 @@ Demo * demos[] = {
 const unsigned num_demos = sizeof(demos) / sizeof(*demos);
 static unsigned demo_num = 0;
 static Demo * demo;
-
+static unsigned clicks = 0;
 static char mac_buf[6*3+1];
 static uint32_t last_draw_millis;
 static uint32_t last_video_millis;
+static uint32_t last_click;
 static bool draw_video;
+static bool ignore_pixels;
 const unsigned brightnessDivisor = 4;
 static unsigned brightness = 128 * brightnessDivisor - 1;
 
@@ -135,34 +141,47 @@ void loop()
 		return;
 	}
 
-	if (badge.button_edge() && !draw_video)
-	{
-		// should cycle to the next demo
-		demo_num = (demo_num + 1) % num_demos;
-		demo = demos[demo_num];
-	}
+	  const uint32_t now = millis();
+
+  if (badge.button_edge()) {
+	  if (!draw_video)
+    {
+	    // should cycle to the next demo
+		  demo_num = (demo_num + 1) % num_demos;
+		  demo = demos[demo_num];
+	  }
+    // three quick clicks disable pixels
+    if (now - last_click < 500ul) {
+      clicks++;
+      if (clicks == 3) {
+        Serial.println("Toggling 'pixels'");
+        ignore_pixels = !ignore_pixels;
+      }
+    } else {
+      clicks = 1;
+    }
+    last_click = now;
+  }
 
 	if (badge.button())
 	{
 		Serial.print(mac_buf); Serial.print(' ');
 		Serial.println(WiFi.localIP());
-
 		Serial.print(badge.nx); Serial.print(' ');
 		Serial.print(badge.ny); Serial.print(' ');
 		Serial.print(badge.nz); Serial.print(' ');
-		Serial.println(badge.g);
+    Serial.println(badge.g);
+//    Serial.print(" ignore_pixels="); Serial.print(ignore_pixels);
+//    Serial.print("  demo_num="); Serial.print(demo_num);
+//	  Serial.println();
 	}
 
- if (badge.button()) {
+  if (badge.button()) {
     nudgeBrightness();
- }
-		
-
-	const uint32_t now = millis();
+  }
 
 	bool do_draw = demo->step(badge.ax, badge.ay, badge.az);
-
-	if (pixels.step(0,0,0))
+	if (!ignore_pixels && pixels.step(0,0,0))
 	{
 		// we have received a video frame.  draw it, not
 		// the demo that we're showing.
