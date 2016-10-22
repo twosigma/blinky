@@ -52,7 +52,7 @@ static unsigned clicks = 0;
 static char mac_buf[6*3+1];
 static uint32_t last_draw_millis;
 static uint32_t last_video_millis;
-static uint32_t last_click;
+static uint32_t last_click_millis;
 static bool draw_video;
 static bool ignore_pixels;
 const unsigned brightnessDivisor = 4;
@@ -152,7 +152,7 @@ void loop()
 			demo = demos[demo_num];
 		}
 		// three quick clicks disable pixels
-		if (now - last_click < 500ul)
+		if (now - last_click_millis < 500ul)
 		{
 			clicks++;
 			if (clicks == 3)
@@ -160,10 +160,11 @@ void loop()
 				//Serial.println("Toggling 'pixels'");
 				ignore_pixels = !ignore_pixels;
 			}
-		} else {
+		} else
+		{
 			clicks = 1;
 		}
-		last_click = now;
+		last_click_millis = now;
 	}
 
 	if (badge.button())
