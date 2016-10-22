@@ -69,7 +69,7 @@ void setup()
 	badge.begin();
 	badge.matrix.clear();
 	badge.matrix.show();
-  nudgeBrightness();
+	nudgeBrightness();
 
 	WiFi.persistent(false);
 
@@ -141,27 +141,30 @@ void loop()
 		return;
 	}
 
-	  const uint32_t now = millis();
+	const uint32_t now = millis();
 
-  if (badge.button_edge()) {
-	  if (!draw_video)
-    {
-	    // should cycle to the next demo
-		  demo_num = (demo_num + 1) % num_demos;
-		  demo = demos[demo_num];
-	  }
-    // three quick clicks disable pixels
-    if (now - last_click < 500ul) {
-      clicks++;
-      if (clicks == 3) {
-        Serial.println("Toggling 'pixels'");
-        ignore_pixels = !ignore_pixels;
-      }
-    } else {
-      clicks = 1;
-    }
-    last_click = now;
-  }
+	if (badge.button_edge())
+	{
+		if (!draw_video)
+		{
+			// should cycle to the next demo
+			demo_num = (demo_num + 1) % num_demos;
+			demo = demos[demo_num];
+		}
+		// three quick clicks disable pixels
+		if (now - last_click < 500ul)
+		{
+			clicks++;
+			if (clicks == 3)
+			{
+				//Serial.println("Toggling 'pixels'");
+				ignore_pixels = !ignore_pixels;
+			}
+		} else {
+			clicks = 1;
+		}
+		last_click = now;
+	}
 
 	if (badge.button())
 	{
@@ -170,15 +173,16 @@ void loop()
 		Serial.print(badge.nx); Serial.print(' ');
 		Serial.print(badge.ny); Serial.print(' ');
 		Serial.print(badge.nz); Serial.print(' ');
-    Serial.println(badge.g);
-//    Serial.print(" ignore_pixels="); Serial.print(ignore_pixels);
-//    Serial.print("  demo_num="); Serial.print(demo_num);
-//	  Serial.println();
+		Serial.println(badge.g);
+		//Serial.print(" ignore_pixels="); Serial.print(ignore_pixels);
+		//Serial.print("  demo_num="); Serial.print(demo_num);
+		//Serial.println();
 	}
 
-  if (badge.button()) {
-    nudgeBrightness();
-  }
+	if (badge.button())
+	{
+		nudgeBrightness();
+	}
 
 	bool do_draw = demo->step(badge.ax, badge.ay, badge.az);
 	if (!ignore_pixels && pixels.step(0,0,0))
