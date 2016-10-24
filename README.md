@@ -18,7 +18,7 @@ The Two Sigma 8x8 Blinky is an Arduino-compatible wearable electronics platform 
   1. Flash Size: 2M (1M SPIFFS)
   1. Reset Method: nodemcu
   1. Upload Speed: 460800 (Use 215600 on Microsoft Windows systems.)
-  1. Port: <varies, typically "/dev/cu.usbmodem1411" on Mac, or "COM#" on Microsoft Windows.>
+  1. Port: varies, typically "/dev/cu.usbmodem1411" on Mac, or "COM#" on Microsoft Windows.
 1. Invoke the "Upload" function under the Sketch menu.
 
 ## Where to learn more about the Espressif ESP8266 WiFi Module on the 8x8 Blinky
