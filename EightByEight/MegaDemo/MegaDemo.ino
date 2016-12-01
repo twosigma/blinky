@@ -22,6 +22,7 @@
 #include "Snake.h"
 #include "Rubiks.h"
 #include "TextScroll.h"
+#include "TSLogo.h"
 
 Badge badge;
 
@@ -34,8 +35,10 @@ Cycle cycle;
 Pov pov;
 Snake snake;
 Rubiks rubiks;
+TSLogo tslogo;
 
 Demo * demos[] = {
+  &tslogo,
     &textscroll,
   //&rubiks,
 	&snake,
