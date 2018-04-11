@@ -40,14 +40,14 @@ RandomAndPleasing r_and_p;
 TSLogo tslogo;
 
 Demo * demos[] = {
-  &tslogo,
-    &textscroll,
+	&tslogo,
+	&textscroll,
   //&rubiks,
 	&snake,
+	&r_and_p,
 	&rain,
 	&life,
 	&bubble,
-	&r_and_p,
   //&cycle,
 };
 

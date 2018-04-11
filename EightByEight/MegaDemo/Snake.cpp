@@ -2,18 +2,23 @@
 #include <math.h>
 #include "Snake.h"
 
-//#include <Adafruit_NeoPixel.h>
+#undef CONFIG_LED_STRIP
+
+#ifdef CONFIG_LED_STRIP
 #define FASTLED_FORCE_SOFTWARE_SPI 1
 #include <FastLED.h>
 #define NUM_PIXELS 51 // necklace length
 
 //Adafruit_NeoPixel neopixels = Adafruit_NeoPixel(NUM_PIXELS, 5, NEO_GRB);
 CRGB neopixels[NUM_PIXELS];
+#endif
 
 Snake::Snake()
 {
+#ifdef CONFIG_LED_STRIP
 	//neopixels.begin();
 	FastLED.addLeds<NEOPIXEL, 5>(neopixels, NUM_PIXELS);
+#endif
 }
 
 static const uint32_t palette[] = {
@@ -248,6 +253,7 @@ void Snake::draw(RGBMatrix &matrix)
 
 		int flash_length = length - (length * flash) / 16;
 
+#ifdef CONFIG_LED_STRIP
 		for(int i = 0 ; i < flash_length ; i++)
 		{
 			neopixels[i] = flash_color;
@@ -256,6 +262,7 @@ void Snake::draw(RGBMatrix &matrix)
 
 		//neopixels[NUM_PIXELS/2 + flash] = flash_color;
 		//neopixels[NUM_PIXELS/2 - flash] = flash_color;
+#endif
 
 		flash--;
 		delay(30);
@@ -267,9 +274,11 @@ void Snake::draw(RGBMatrix &matrix)
 			for(int y = 0 ; y < size ; y++)
 				matrix.blend(x, y, 1, 0);
 
+#ifdef CONFIG_LED_STRIP
 		//neopixels.fadeToBlackBy(4);
 		for(int i = 0 ; i < NUM_PIXELS ; i++)
 			neopixels[i] -= CRGB(1,1,1);
+#endif
 
 		if (--dead == 0)
 			begin();
@@ -279,12 +288,16 @@ void Snake::draw(RGBMatrix &matrix)
 		matrix.blend(px, py, 128, palette[1]);
 		matrix.blend(fx, fy, 128, palette[2]);
 
+#ifdef CONFIG_LED_STRIP
 		// fade the necklace
 		//neopixels.fadeToBlackBy(1);
 		for(int i = 0 ; i < NUM_PIXELS ; i++)
 			neopixels[i] -= CRGB(4,1,1);
+#endif
 	}
 
+#ifdef CONFIG_LED_STRIP
 	// update the necklace portion, too
-	//neopixels.show();
+	neopixels.show();
+#endif
 }
