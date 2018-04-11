@@ -18,6 +18,7 @@
 #include "Snake.h"
 #include "Rubiks.h"
 #include "TextScroll.h"
+#include "RandomAndPleasing.h"
 
 #define FASTLED_FORCE_SOFTWARE_SPI 1
 #include <FastLED.h>
@@ -33,6 +34,7 @@ Cycle cycle;
 Pov pov;
 Snake snake;
 Rubiks rubiks;
+RandomAndPleasing r_and_p;
 
 Demo * demos[] = {
     //&textscroll,
@@ -41,6 +43,7 @@ Demo * demos[] = {
 	&rain,
 	&life,
 	&bubble,
+	&r_and_p,
   //&cycle,
 };
 
